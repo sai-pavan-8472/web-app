@@ -43,56 +43,33 @@ BasicWebApp/
 msbuild BasicWebApp.csproj /p:Configuration=Release /p:Platform=AnyCPU
 ```
 
-## Deployment to Azure App Service
+## Deployment to Azure App Service (Minimal ZIP deploy)
 
-### Prerequisites
+Use the ZIP deployment method to quickly test a minimal app and isolate errors.
 
-- Azure subscription
-- Azure CLI installed
-- Web App created with runtime stack: .NET - v4.0
+1) Create a minimal site in the repo root:
 
-### Step 1: Create an App Service (if not already created)
-
-```bash
-az group create --name myResourceGroup --location eastus
-az appservice plan create --name myAppServicePlan --resource-group myResourceGroup --sku FREE
-az webapp create --resource-group myResourceGroup --plan myAppServicePlan --name myBasicWebApp
+PowerShell:
+```powershell
+mkdir .\simple-deploy
+Set-Content -Path .\simple-deploy\Default.aspx -Value '<%@ Page Language="C#" AutoEventWireup="true" %><!DOCTYPE html><html><body><h1>Minimal App</h1></body></html>'
+Set-Content -Path .\simple-deploy\Web.config -Value '<?xml version="1.0" encoding="utf-8"?><configuration><system.web><compilation debug="false" targetFramework="4.0" /></system.web></configuration>'
+Compress-Archive -Path .\simple-deploy\* -DestinationPath .\app.zip -Force
 ```
 
-### Step 2: Configure Runtime Stack
-
-Ensure the App Service is configured with:
-- Runtime Stack: .NET - v4.0
-- This can be set during creation or updated in the Azure Portal
-
-### Step 3: Publish the Application
-
-**Option A: Using Visual Studio**
-
-1. Right-click the project → Publish
-2. Select "Azure App Service"
-3. Choose your subscription and app service
-4. Click "Publish"
-
-**Option B: Using Azure CLI**
+2) Deploy the ZIP to your App Service:
 
 ```bash
-cd web-app
-msbuild BasicWebApp.csproj /p:Configuration=Release
-
-# Zip the contents
-Compress-Archive -Path Default.aspx, Global.asax, Global.asax.cs, Web.config, BasicWebApp.csproj -DestinationPath publish.zip
-
-# Deploy
-az webapp deployment source config-zip --resource-group myResourceGroup --name myBasicWebApp --src publish.zip
+az webapp deployment source config-zip --resource-group ci-dev-01 --name ci-web-app-01 --src ./app.zip
 ```
 
-**Option C: Direct Deployment with FTP**
+3) Tail logs while deploying:
 
-1. Get FTP credentials from Azure Portal
-2. Use FileZilla or any FTP client
-3. Connect to your App Service
-4. Upload files to wwwroot directory
+```bash
+az webapp log tail --name ci-web-app-01 --resource-group ci-dev-01
+```
+
+If the minimal app deploys successfully, incrementally add back files from the main project until the failure reappears. This isolates the problematic file or configuration.
 
 ## Configuration
 
