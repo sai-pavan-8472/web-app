@@ -1,0 +1,6 @@
+C:\Users\91939\OneDrive\Desktop\Build\web-app\bin\BasicWebApp.dll
+C:\Users\91939\OneDrive\Desktop\Build\web-app\bin\BasicWebApp.pdb
+C:\Users\91939\OneDrive\Desktop\Build\web-app\obj\Debug\BasicWebApp.csproj.AssemblyReference.cache
+C:\Users\91939\OneDrive\Desktop\Build\web-app\obj\Debug\BasicWebApp.csproj.CoreCompileInputs.cache
+C:\Users\91939\OneDrive\Desktop\Build\web-app\obj\Debug\BasicWebApp.dll
+C:\Users\91939\OneDrive\Desktop\Build\web-app\obj\Debug\BasicWebApp.pdb
